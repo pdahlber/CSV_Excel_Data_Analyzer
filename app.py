@@ -392,14 +392,24 @@ if uploaded_file:
                 #Otherwise replace it with the word "None"
                 filters_applied = "None"
 
-            if st.button("Generate AI Insights"):
-                #Take your grouped data and format it into a multi-line string.
-                analysis_results = "\n".join(
-                f"- {category}: {value:,.2f}  "
-                for category, value in grouped_data.items()
-            )
+            #Start a Session-State variable to track whether the AI Insights Feature has been used once already in the user's session.
+            if "ai_insights_generated" not in st.session_state:
+                st.session_state.ai_insights_generated = False
 
-                prompt = f"""
+            if st.button("Generate AI Insights"):
+                #Display a warning if the AI Insights Feature has already been used in the current Session.
+                if st.session_state.ai_insights_generated:
+                    st.warning("AI Insights have already been generated during this session.")
+                    
+                #Proceed with AI Insights if it hasn't been used yet.
+                else:
+                    #Take your grouped data and format it into a multi-line string.
+                    analysis_results = "\n".join(
+                    f"- {category}: {value:,.2f}  "
+                    for category, value in grouped_data.items()
+                    )
+
+                    prompt = f"""
 You are a data analysis assistant. Analyze the following results from a
 dataset and provide useful, concise insights.
 
@@ -425,15 +435,16 @@ Focus on meaningful comparisons, differences, and patterns.
 Do not simply repeat the values.
 When relevant, incorporate the active filters into your insights.
 """
-                try:
-                    with st.spinner("Generating AI Insights..."):
-                        response = client.chat.completions.create(
-                            model="gpt-4o-mini",
-                            messages=[{"role": "user", "content": prompt}]
-                        )
-                    st.write(response.choices[0].message.content)
-                except Exception as e:
-                    st.error(f"Unable to generate AI insights. Error: {e}")
+                    try:
+                        with st.spinner("Generating AI Insights..."):
+                            response = client.chat.completions.create(
+                                model="gpt-4o-mini",
+                                messages=[{"role": "user", "content": prompt}]
+                            )
+                        st.write(response.choices[0].message.content)
+                        st.session_state.ai_insights_generated = True
+                    except Exception as e:
+                        st.error(f"Unable to generate AI insights. Error: {e}")
 
     except Exception as e:
         st.error(f"Unable to read the uploaded file. "
