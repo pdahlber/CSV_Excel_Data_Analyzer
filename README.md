@@ -13,6 +13,13 @@ A Python/Streamlit application that allows users to upload CSV and Excel files, 
 - Create interactive visualizations
 - Generate AI powered insights based on the analyzed data
 
+## App Preview:
+
+![App Main Interface](screenshots/Main%20Interface.png)
+![Dataset Overview and Cleaning](screenshots/Data%20Overview.png)
+![Data Filters and Summary Metrics](screenshots/Filters%20&%20Summary%20Metrics.png)
+![Grouped Data Analysis](screenshots/Data%20Analysis.png)
+![Data Visualization and AI Insights](screenshots/Chart%20and%20AI%20Insights.png)
 ## Technologies Used:
 - Python
 - Pandas
